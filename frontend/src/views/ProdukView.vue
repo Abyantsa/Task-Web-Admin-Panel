@@ -4,7 +4,7 @@
 
     <main class="ml-60 flex-1 p-8">
       <!-- Header -->
-      <div class="flex items-center justify-between mb-8">
+      <div class="flex items-center justify-between mb-6">
         <div>
           <h2 class="text-2xl font-bold text-gray-800">Produk</h2>
           <p class="text-sm text-gray-500 mt-1">Kelola master data produk</p>
@@ -18,6 +18,26 @@
         </button>
       </div>
 
+      <!-- Search -->
+      <div class="mb-4">
+        <div class="relative max-w-sm">
+          <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">🔍</span>
+          <input
+            v-model="searchQuery"
+            type="text"
+            placeholder="Cari nama produk..."
+            class="w-full pl-9 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white"
+          />
+          <button
+            v-if="searchQuery"
+            @click="searchQuery = ''"
+            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-lg leading-none"
+          >
+            &times;
+          </button>
+        </div>
+      </div>
+
       <!-- Table -->
       <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
         <div v-if="loading" class="px-6 py-10 text-center text-gray-400 text-sm">Memuat data...</div>
@@ -26,7 +46,15 @@
           Belum ada produk
         </div>
 
+        <div v-else-if="filteredProduk.length === 0" class="px-6 py-10 text-center text-gray-400 text-sm">
+          Tidak ada produk yang cocok dengan "<span class="font-medium text-gray-600">{{ searchQuery }}</span>"
+        </div>
+
         <div v-else class="overflow-x-auto">
+          <!-- info hasil search -->
+          <div v-if="searchQuery" class="px-6 pt-4 pb-2 text-xs text-gray-400">
+            Menampilkan {{ filteredProduk.length }} dari {{ produkList.length }} produk
+          </div>
           <table class="w-full text-sm">
             <thead>
               <tr class="bg-gray-50 text-gray-500 text-xs uppercase tracking-wide">
@@ -38,7 +66,7 @@
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-50">
-              <tr v-for="(p, i) in produkList" :key="p.id" class="hover:bg-gray-50 transition-colors">
+              <tr v-for="(p, i) in filteredProduk" :key="p.id" class="hover:bg-gray-50 transition-colors">
                 <td class="px-6 py-4 text-gray-400">{{ i + 1 }}</td>
                 <td class="px-6 py-4 font-medium text-gray-800">{{ p.nama_produk }}</td>
                 <td class="px-6 py-4 text-gray-600">{{ formatRupiah(p.harga) }}</td>
@@ -193,6 +221,7 @@ const { showToast } = useToast()
 
 const loading   = ref(true)
 const produkList = ref([])
+const searchQuery = ref('')
 const showModal       = ref(false)
 const showDeleteModal = ref(false)
 const editMode   = ref(false)
@@ -205,6 +234,14 @@ const form = ref({ id: null, nama_produk: '', harga: 0, stok: 0 })
 const isAdmin = computed(() => {
   const user = JSON.parse(localStorage.getItem('user') ?? '{}')
   return user?.role === 'admin'
+})
+
+const filteredProduk = computed(() => {
+  if (!searchQuery.value.trim()) return produkList.value
+  const q = searchQuery.value.toLowerCase().trim()
+  return produkList.value.filter(p =>
+    p.nama_produk.toLowerCase().includes(q)
+  )
 })
 
 async function fetchProduk() {
