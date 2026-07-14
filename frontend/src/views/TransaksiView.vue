@@ -88,8 +88,8 @@
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-50">
-              <tr v-for="(t, i) in transaksiList" :key="t.id" class="hover:bg-gray-50 transition-colors">
-                <td class="px-6 py-4 text-gray-400">{{ i + 1 }}</td>
+              <tr v-for="(t, i) in paginatedList" :key="t.id" class="hover:bg-gray-50 transition-colors">
+                <td class="px-6 py-4 text-gray-400">{{ startIndex + i }}</td>
                 <td class="px-6 py-4 text-gray-600">{{ formatDate(t.tanggal_transaksi) }}</td>
                 <td class="px-6 py-4 font-medium text-gray-800">{{ t.nama_produk }}</td>
                 <td class="px-6 py-4 text-gray-600">{{ formatRupiah(t.harga_satuan) }}</td>
@@ -106,6 +106,54 @@
               </tr>
             </tbody>
           </table>
+
+          <!-- Pagination -->
+          <div v-if="totalPages > 1 || transaksiList.length > 0" class="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <p class="text-xs text-gray-400">
+                Menampilkan {{ startIndex }}–{{ endIndex }} dari {{ transaksiList.length }} transaksi
+              </p>
+              <!-- Per page selector -->
+              <select
+                v-model.number="perPage"
+                class="text-xs border border-gray-200 rounded-lg px-2 py-1.5 text-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              >
+                <option :value="5">5 / halaman</option>
+                <option :value="10">10 / halaman</option>
+                <option :value="15">15 / halaman</option>
+                <option :value="20">20 / halaman</option>
+              </select>
+            </div>
+            <div class="flex items-center gap-1">
+              <button
+                @click="prev"
+                :disabled="currentPage === 1"
+                class="px-3 py-1.5 text-xs rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              >
+                ← Prev
+              </button>
+              <template v-for="page in pageNumbers" :key="page">
+                <span v-if="page === '...'" class="px-2 text-gray-400 text-xs">…</span>
+                <button
+                  v-else
+                  @click="goTo(page)"
+                  class="w-8 h-8 text-xs rounded-lg border transition-colors"
+                  :class="currentPage === page
+                    ? 'bg-indigo-600 text-white border-indigo-600'
+                    : 'border-gray-200 text-gray-600 hover:bg-gray-50'"
+                >
+                  {{ page }}
+                </button>
+              </template>
+              <button
+                @click="next"
+                :disabled="currentPage === totalPages"
+                class="px-3 py-1.5 text-xs rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              >
+                Next →
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </main>
@@ -117,6 +165,7 @@ import { ref, computed, onMounted } from 'vue'
 import Sidebar from '../components/Sidebar.vue'
 import api from '../services/api'
 import { useToast } from '../composables/useToast'
+import { usePagination } from '../composables/usePagination'
 
 const { showToast } = useToast()
 
@@ -132,6 +181,11 @@ const previewTotal = computed(() => {
   if (!produk || !form.value.qty) return null
   return Number(produk.harga) * Number(form.value.qty)
 })
+
+const {
+  currentPage, perPage, totalPages, paginatedList,
+  startIndex, endIndex, pageNumbers, goTo, prev, next,
+} = usePagination(transaksiList, 10)
 
 async function fetchAll() {
   loading.value = true

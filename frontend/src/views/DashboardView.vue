@@ -51,7 +51,7 @@
       <!-- Transaksi Terbaru -->
       <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
         <div class="px-6 py-4 border-b border-gray-100">
-          <h3 class="font-semibold text-gray-700">5 Transaksi Terbaru</h3>
+          <h3 class="font-semibold text-gray-700">7 Transaksi Terbaru</h3>
         </div>
 
         <div v-if="loading" class="px-6 py-10 text-center text-gray-400 text-sm">Memuat data...</div>
@@ -110,7 +110,7 @@ async function fetchData() {
     stats.value.totalProduk    = produk.length
     stats.value.totalTransaksi = transaksi.length
     stats.value.totalPendapatan = transaksi.reduce((sum, t) => sum + Number(t.total_harga), 0)
-    recentTransaksi.value = transaksi.slice(0, 5)
+    recentTransaksi.value = transaksi.slice(0, 7)
   } catch (err) {
     console.error('Dashboard fetch error:', err)
   } finally {
