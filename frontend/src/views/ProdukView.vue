@@ -187,6 +187,9 @@
 import { ref, computed, onMounted } from 'vue'
 import Sidebar from '../components/Sidebar.vue'
 import api from '../services/api'
+import { useToast } from '../composables/useToast'
+
+const { showToast } = useToast()
 
 const loading   = ref(true)
 const produkList = ref([])
@@ -242,12 +245,14 @@ async function submitForm() {
         harga: form.value.harga,
         stok: form.value.stok,
       })
+      showToast('Produk berhasil diupdate', 'success')
     } else {
       await api.post('/products', {
         nama_produk: form.value.nama_produk,
         harga: form.value.harga,
         stok: form.value.stok,
       })
+      showToast('Produk berhasil ditambahkan', 'success')
     }
     closeModal()
     await fetchProduk()
@@ -268,9 +273,11 @@ async function deleteProduk() {
   try {
     await api.delete(`/products/${deleteTarget.value.id}`)
     showDeleteModal.value = false
+    showToast(`Produk "${deleteTarget.value.nama_produk}" berhasil dihapus`, 'success')
     await fetchProduk()
   } catch (err) {
-    alert(err.response?.data?.message ?? 'Gagal menghapus produk')
+    showDeleteModal.value = false
+    showToast(err.response?.data?.message ?? 'Gagal menghapus produk', 'error')
   } finally {
     submitting.value = false
   }

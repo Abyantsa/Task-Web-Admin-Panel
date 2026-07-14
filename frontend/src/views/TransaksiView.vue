@@ -59,13 +59,6 @@
             {{ submitting ? 'Memproses...' : 'Buat Transaksi' }}
           </button>
         </form>
-
-        <!-- Error / Success -->
-        <div v-if="formMsg.text" class="mt-4 px-4 py-3 rounded-lg text-sm"
-          :class="formMsg.type === 'error' ? 'bg-red-50 border border-red-200 text-red-600' : 'bg-emerald-50 border border-emerald-200 text-emerald-700'"
-        >
-          {{ formMsg.text }}
-        </div>
       </div>
 
       <!-- Tabel Riwayat -->
@@ -123,6 +116,9 @@
 import { ref, computed, onMounted } from 'vue'
 import Sidebar from '../components/Sidebar.vue'
 import api from '../services/api'
+import { useToast } from '../composables/useToast'
+
+const { showToast } = useToast()
 
 const loading    = ref(true)
 const submitting = ref(false)
@@ -130,7 +126,6 @@ const produkList    = ref([])
 const transaksiList = ref([])
 
 const form = ref({ produk_id: '', qty: 1 })
-const formMsg = ref({ type: '', text: '' })
 
 const previewTotal = computed(() => {
   const produk = produkList.value.find(p => p.id === form.value.produk_id)
@@ -155,18 +150,17 @@ async function fetchAll() {
 }
 
 async function submitTransaksi() {
-  formMsg.value = { type: '', text: '' }
   submitting.value = true
   try {
     await api.post('/transactions', {
       produk_id: form.value.produk_id,
       qty: form.value.qty,
     })
-    formMsg.value = { type: 'success', text: 'Transaksi berhasil dibuat!' }
+    showToast('Transaksi berhasil dibuat!', 'success')
     form.value = { produk_id: '', qty: 1 }
     await fetchAll()
   } catch (err) {
-    formMsg.value = { type: 'error', text: err.response?.data?.message ?? 'Terjadi kesalahan' }
+    showToast(err.response?.data?.message ?? 'Terjadi kesalahan', 'error')
   } finally {
     submitting.value = false
   }
