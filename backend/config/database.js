@@ -9,8 +9,18 @@ const sequelize = new Sequelize(
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
     dialect: 'postgres',
-    logging: false, // set to console.log to see SQL queries
+    logging: false, // set true untuk lihat query SQL di console
   }
 );
 
-module.exports = sequelize;
+const connectDB = async () => {
+  try {
+    await sequelize.authenticate();
+    console.log('PostgreSQL connected successfully.');
+  } catch (error) {
+    console.error('Unable to connect to the database:', error.message);
+    process.exit(1);
+  }
+};
+
+module.exports = { sequelize, connectDB };
