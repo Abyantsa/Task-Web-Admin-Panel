@@ -50,8 +50,14 @@
 
       <!-- Transaksi Terbaru -->
       <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
-        <div class="px-6 py-4 border-b border-gray-100">
-          <h3 class="font-semibold text-gray-700">7 Transaksi Terbaru</h3>
+        <div class="px-6 py-3 border-b border-gray-100 flex items-center justify-between">
+          <h3 class="font-semibold text-gray-700">Transaksi Terbaru</h3>
+          <RouterLink
+          to="/transactions"
+          class="grid-cols-3 gap-x-8 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white text-sm font-semibold px-4 py-2.5 rounded-lg shadow-md shadow-indigo-200 hover:shadow-lg hover:shadow-indigo-300 transition-all duration-150"
+          >
+            Lihat Semua →
+          </RouterLink>
         </div>
 
         <div v-if="loading" class="px-6 py-10 text-center text-gray-400 text-sm">Memuat data...</div>

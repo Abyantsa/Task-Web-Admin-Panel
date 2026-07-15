@@ -9,34 +9,38 @@
           <h2 class="text-2xl font-bold text-gray-800">Produk</h2>
           <p class="text-sm text-gray-500 mt-1">Kelola master data produk</p>
         </div>
-        <button
-          v-if="isAdmin"
-          @click="openModal()"
-          class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-2.5 rounded-lg transition-colors"
-        >
-          <span class="text-base">+</span> Tambah Produk
-        </button>
       </div>
 
       <!-- Search -->
       <div class="mb-4">
-        <div class="relative max-w-sm">
-          <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">🔍</span>
-          <input
-            v-model="searchQuery"
-            type="text"
-            placeholder="Cari nama produk..."
-            class="w-full pl-9 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white"
-          />
+        <div class="flex items-center gap-3">
+          <div class="relative flex-1">
+            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">🔍</span>
+            <input
+              v-model="searchQuery"
+              type="text"
+              placeholder="Cari nama produk..."
+              class="w-full pl-9 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white"
+            />
+            <button
+              v-if="searchQuery"
+              @click="searchQuery = ''"
+              class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-lg leading-none"
+            >
+              &times;
+            </button>
+          </div>
           <button
-            v-if="searchQuery"
-            @click="searchQuery = ''"
-            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-lg leading-none"
+            v-if="isAdmin"
+            @click="openModal()"
+            class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white text-sm font-semibold px-4 py-2.5 rounded-lg shadow-md shadow-indigo-200 hover:shadow-lg hover:shadow-indigo-300 transition-all duration-150"
           >
-            &times;
+            <span class="text-base">+</span> Tambah Produk
           </button>
+
         </div>
       </div>
+
 
       <!-- Table -->
       <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
