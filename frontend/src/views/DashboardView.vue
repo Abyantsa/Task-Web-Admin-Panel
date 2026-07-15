@@ -16,7 +16,7 @@
           <div class="flex items-center justify-between mb-4">
             <span class="text-sm font-medium text-gray-500">Total Produk</span>
             <div class="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center">
-              <span class="text-xl">📦</span>
+              <Package class="w-5 h-5" />
             </div>
           </div>
           <p class="text-3xl font-bold text-gray-800">{{ stats.totalProduk }}</p>
@@ -28,7 +28,7 @@
           <div class="flex items-center justify-between mb-4">
             <span class="text-sm font-medium text-gray-500">Total Transaksi</span>
             <div class="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center">
-              <span class="text-xl">🧾</span>
+              <ShoppingCart class="w-5 h-5" />
             </div>
           </div>
           <p class="text-3xl font-bold text-gray-800">{{ stats.totalTransaksi }}</p>
@@ -40,7 +40,7 @@
           <div class="flex items-center justify-between mb-4">
             <span class="text-sm font-medium text-gray-500">Total Pendapatan</span>
             <div class="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center">
-              <span class="text-xl">💰</span>
+              <DollarSign class="w-5 h-5" />
             </div>
           </div>
           <p class="text-3xl font-bold text-gray-800">{{ formatRupiah(stats.totalPendapatan) }}</p>
@@ -99,6 +99,7 @@ import Sidebar from '../components/Sidebar.vue'
 import api from '../services/api'
 import { useRoute } from 'vue-router';
 import { useToast } from '../composables/useToast';
+import { Package, ShoppingCart, DollarSign } from '@lucide/vue'
 
 const loading = ref(true)
 const stats = ref({ totalProduk: 0, totalTransaksi: 0, totalPendapatan: 0 })

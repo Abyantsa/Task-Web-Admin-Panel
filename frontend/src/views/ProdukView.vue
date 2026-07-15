@@ -15,7 +15,7 @@
       <div class="mb-4">
         <div class="flex items-center gap-3">
           <div class="relative flex-1">
-            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">🔍</span>
+            <Search class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm w-4 h-4"/>
             <input
               v-model="searchQuery"
               type="text"
@@ -269,9 +269,9 @@ import Sidebar from '../components/Sidebar.vue'
 import api from '../services/api'
 import { useToast } from '../composables/useToast'
 import { usePagination } from '../composables/usePagination'
+import { Search } from '@lucide/vue'
 
 const { showToast } = useToast()
-
 const loading   = ref(true)
 const produkList = ref([])
 const searchQuery = ref('')
