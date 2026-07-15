@@ -33,7 +33,7 @@
     <div class="px-4 py-4 border-t border-indigo-600">
       <button
         @click="logout"
-        class="w-full text-left flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-indigo-200 hover:bg-indigo-600 hover:text-white transition-colors"
+        class="w-full text-left flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-indigo-200 hover:bg-pink-500 hover:text-white transition-colors"
       >
         <span>🚪</span> Logout
       </button>
@@ -67,6 +67,6 @@ function isActive(path) {
 function logout() {
   localStorage.removeItem('token')
   localStorage.removeItem('user')
-  router.push('/login')
+  router.push('/login?logout=true')
 }
 </script>

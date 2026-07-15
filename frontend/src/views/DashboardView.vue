@@ -97,10 +97,14 @@
 import { ref, onMounted } from 'vue'
 import Sidebar from '../components/Sidebar.vue'
 import api from '../services/api'
+import { useRoute } from 'vue-router';
+import { useToast } from '../composables/useToast';
 
 const loading = ref(true)
 const stats = ref({ totalProduk: 0, totalTransaksi: 0, totalPendapatan: 0 })
 const recentTransaksi = ref([])
+const route = useRoute()
+const { showToast } = useToast()
 
 async function fetchData() {
   loading.value = true
@@ -132,5 +136,11 @@ function formatDate(dateStr) {
   return new Date(dateStr).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })
 }
 
-onMounted(fetchData)
+onMounted(() => {
+  if (route.query.login === 'true') {
+    const user = JSON.parse(localStorage.getItem('user') ?? '{}')
+    showToast(`Selamat datang, ${user.username}! 👋`, 'success')
+  }
+  fetchData()
+})
 </script>

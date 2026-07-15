@@ -55,13 +55,16 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import api from '../services/api'
+import { useToast } from '../composables/useToast'
 
-const router   = useRouter()
-const loading  = ref(false)
-const errorMsg = ref('')
+const router        = useRouter()
+const route         = useRoute()
+const loading       = ref(false)
+const errorMsg      = ref('')
+const { showToast } = useToast()
 
 const form = ref({ username: '', password: '' })
 
@@ -81,11 +84,17 @@ async function handleLogin() {
     localStorage.setItem('token', token)
     localStorage.setItem('user', JSON.stringify(user))
 
-    router.push('/')
+    router.push('/?login=true')
   } catch (err) {
     errorMsg.value = err.response?.data?.message ?? 'Terjadi kesalahan, coba lagi'
   } finally {
     loading.value = false
   }
 }
+
+onMounted(() => {
+  if (route.query.logout === 'true') {
+    showToast('Berhasil logout. Sampai jumpa!', 'info')
+  }
+})
 </script>

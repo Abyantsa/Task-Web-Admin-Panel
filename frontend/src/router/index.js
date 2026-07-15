@@ -9,8 +9,6 @@ const routes = [
   { path: '/',      name: 'Dashboard',  component: DashboardView },
   { path: '/products',     name: 'Produk',    component: ProdukView },
   { path: '/transactions', name: 'Transaksi', component: TransaksiView },
-  // redirect semua path tidak dikenal ke dashboard
-  { path: '/:pathMatch(.*)*', redirect: '/' },
 ]
 
 const router = createRouter({
