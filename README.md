@@ -355,30 +355,107 @@ npm run build
 
 ## Screenshots
 
-### Login Page
-<img width="1912" height="1042" alt="image" src="https://github.com/user-attachments/assets/f064fa1f-b09c-428e-a346-1e6cadd72caa" />
+<table>
+  <tr>
+    <td align="center" colspan="2"><b>🔐 Login Page</b></td>
+  </tr>
+  <tr>
+    <td colspan="2">
+      <img src="https://github.com/user-attachments/assets/f064fa1f-b09c-428e-a346-1e6cadd72caa" alt="Login Page" width="100%"/>
+    </td>
+  </tr>
 
-### Dashboard
-<img width="1917" height="1045" alt="image" src="https://github.com/user-attachments/assets/b69fd389-e095-4a33-8192-b9533b628004" />
+  <tr><td colspan="2"><br/></td></tr>
 
-### Halaman Produk
-<img width="1917" height="1045" alt="image" src="https://github.com/user-attachments/assets/b2c600db-662e-41bc-83d9-9f09971631af" />
+  <tr>
+    <td align="center" colspan="2"><b>📊 Dashboard</b></td>
+  </tr>
+  <tr>
+    <td colspan="2">
+      <img src="https://github.com/user-attachments/assets/b69fd389-e095-4a33-8192-b9533b628004" alt="Dashboard" width="100%"/>
+    </td>
+  </tr>
 
-### Tambah / Edit / Hapus Produk (Modal)
-<img width="1917" height="1047" alt="image" src="https://github.com/user-attachments/assets/b6ce31c2-8fa4-45f8-ad10-3bf543116166" />
-<img width="1917" height="1047" alt="image" src="https://github.com/user-attachments/assets/200f0648-41f6-4ddf-be39-58745f339bb8" />
-<img width="1917" height="1046" alt="image" src="https://github.com/user-attachments/assets/20edd987-02a8-4ff5-b8e2-8058cd3353ba" />
+  <tr><td colspan="2"><br/></td></tr>
 
-### Halaman Transaksi
-<img width="1917" height="1045" alt="image" src="https://github.com/user-attachments/assets/12a259c5-2a4e-4dc4-b19d-e6b0510b4740" />
+  <tr>
+    <td align="center" colspan="2"><b>📦 Halaman Produk</b></td>
+  </tr>
+  <tr>
+    <td colspan="2">
+      <img src="https://github.com/user-attachments/assets/b2c600db-662e-41bc-83d9-9f09971631af" alt="Halaman Produk" width="100%"/>
+    </td>
+  </tr>
 
-### Toast Notification
-<img width="367" height="81" alt="image" src="https://github.com/user-attachments/assets/62e73a90-83d2-47b9-83ce-67e6086aff6d" />
-<img width="367" height="82" alt="image" src="https://github.com/user-attachments/assets/29f50cea-fb49-4773-bc7b-969fc89117a3" />
-<img width="365" height="77" alt="image" src="https://github.com/user-attachments/assets/ea64168c-f30e-4e03-a500-b3140e940907" />
-<img width="366" height="81" alt="image" src="https://github.com/user-attachments/assets/034d9831-a171-4715-9e48-a498199ee0f8" />
-<img width="397" height="82" alt="image" src="https://github.com/user-attachments/assets/fad7fc84-a283-466a-90c2-827e055dc055" />
-<img width="365" height="82" alt="image" src="https://github.com/user-attachments/assets/1df6e300-5e32-4baf-8c67-338dcb6f04c6" />
+  <tr><td colspan="2"><br/></td></tr>
+
+  <tr>
+    <td align="center" colspan="2"><b>✏️ Modal Produk — Tambah / Edit / Hapus</b></td>
+  </tr>
+  <tr>
+    <td align="center" width="33%">
+      <img src="https://github.com/user-attachments/assets/b6ce31c2-8fa4-45f8-ad10-3bf543116166" alt="Modal Tambah Produk" width="100%"/>
+      <sub>Tambah</sub>
+    </td>
+    <td align="center" width="33%">
+      <img src="https://github.com/user-attachments/assets/200f0648-41f6-4ddf-be39-58745f339bb8" alt="Modal Edit Produk" width="100%"/>
+      <sub>Edit</sub>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" align="center">
+      <img src="https://github.com/user-attachments/assets/20edd987-02a8-4ff5-b8e2-8058cd3353ba" alt="Konfirmasi Hapus Produk" width="50%"/>
+      <br/><sub>Konfirmasi Hapus</sub>
+    </td>
+  </tr>
+
+  <tr><td colspan="2"><br/></td></tr>
+
+  <tr>
+    <td align="center" colspan="2"><b>🧾 Halaman Transaksi</b></td>
+  </tr>
+  <tr>
+    <td colspan="2">
+      <img src="https://github.com/user-attachments/assets/12a259c5-2a4e-4dc4-b19d-e6b0510b4740" alt="Halaman Transaksi" width="100%"/>
+    </td>
+  </tr>
+
+  <tr><td colspan="2"><br/></td></tr>
+
+  <tr>
+    <td align="center" colspan="2"><b>🔔 Toast Notification</b></td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="https://github.com/user-attachments/assets/62e73a90-83d2-47b9-83ce-67e6086aff6d" alt="Toast Success" width="100%"/>
+      <sub>Success</sub>
+    </td>
+    <td align="center">
+      <img src="https://github.com/user-attachments/assets/29f50cea-fb49-4773-bc7b-969fc89117a3" alt="Toast Error" width="100%"/>
+      <sub>Error</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="https://github.com/user-attachments/assets/ea64168c-f30e-4e03-a500-b3140e940907" alt="Toast Warning" width="100%"/>
+      <sub>Warning</sub>
+    </td>
+    <td align="center">
+      <img src="https://github.com/user-attachments/assets/034d9831-a171-4715-9e48-a498199ee0f8" alt="Toast Info" width="100%"/>
+      <sub>Info</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="https://github.com/user-attachments/assets/fad7fc84-a283-466a-90c2-827e055dc055" alt="Toast Delete" width="100%"/>
+      <sub>Delete</sub>
+    </td>
+    <td align="center">
+      <img src="https://github.com/user-attachments/assets/1df6e300-5e32-4baf-8c67-338dcb6f04c6" alt="Toast Warning Stok" width="100%"/>
+      <sub>Warning Stok</sub>
+    </td>
+  </tr>
+</table>
 
 
 
