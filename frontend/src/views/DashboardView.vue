@@ -77,7 +77,7 @@
         <!-- Transaksi Terbaru -->
         <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
           <div class="px-4 sm:px-6 py-3 border-b border-gray-100 flex items-center justify-between gap-3">
-            <h3 class="font-semibold text-gray-700 text-sm sm:text-base">7 Transaksi Terbaru</h3>
+            <h3 class="font-semibold text-gray-700 text-sm sm:text-base">Transaksi Terbaru</h3>
             <RouterLink
               to="/transactions"
               class="bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white text-xs sm:text-sm font-semibold px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg shadow-md shadow-indigo-200 transition-all duration-150 whitespace-nowrap"
@@ -175,7 +175,7 @@ async function fetchData() {
     stats.value.totalProduk     = produk.length
     stats.value.totalTransaksi  = transaksi.length
     stats.value.totalPendapatan = transaksi.reduce((sum, t) => sum + Number(t.total_harga), 0)
-    recentTransaksi.value       = transaksi.slice(0, 7)
+    recentTransaksi.value       = transaksi.slice(0, 6)
   } catch (err) {
     console.error('Dashboard fetch error:', err)
   } finally {
