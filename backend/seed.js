@@ -46,6 +46,11 @@ async function seed() {
       console.log(`   - [id:${p.id}] ${p.nama_produk} | Rp ${p.harga} | stok: ${p.stok}`)
     );
 
+    // Reset sequences agar tidak collision setelah insert manual apapun
+    await client.query("SELECT setval('users_id_seq',  (SELECT MAX(id) FROM users),  true)");
+    await client.query("SELECT setval('produk_id_seq', (SELECT MAX(id) FROM produk), true)");
+    console.log('✅ Sequences di-reset');
+
     console.log('\n🎉 Seeding selesai!');
     console.log('─────────────────────────────────');
     console.log('Login credentials:');
