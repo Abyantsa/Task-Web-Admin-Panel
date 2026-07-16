@@ -51,3 +51,16 @@ out/
 # Coverage directory
 coverage/
 .nyc_output/
+
+# Vite
+*.local
+vite.config.*.timestamp-*
+
+# OS
+Thumbs.db
+
+# Backend: env example override (kalau ada .env.example yang berisi nilai nyata)
+# .env.example  ← jangan di-ignore, ini memang harus di-commit sebagai template
+
+# Optional: lock files (uncomment jika tim sepakat tidak commit lock files)
+# package-lock.json
