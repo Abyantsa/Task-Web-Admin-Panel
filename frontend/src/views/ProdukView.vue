@@ -2,245 +2,224 @@
   <div class="flex min-h-screen bg-gray-50">
     <Sidebar />
 
-    <main class="flex-1 transition-all duration-300 flex flex-col" :class="isCollapsed ? 'ml-16' : 'ml-60'">
-
+    <main
+      class="flex-1 flex flex-col min-w-0 transition-all duration-300"
+      :class="isCollapsed ? 'lg:ml-16' : 'lg:ml-60'"
+    >
       <!-- Topbar -->
-      <div class="flex items-center gap-4 px-6 py-3 bg-white border-b border-gray-100 sticky top-0 z-10">
+      <div class="flex items-center gap-3 px-4 py-3 bg-white border-b border-gray-100 sticky top-0 z-10">
+        <!-- Mobile: hamburger -->
+        <button
+          @click="openMobile"
+          class="lg:hidden w-8 h-8 rounded-lg flex items-center justify-center bg-gray-100 text-gray-500 hover:bg-gray-200 transition-colors shrink-0"
+        >
+          <Menu class="w-4 h-4" />
+        </button>
+
+        <!-- Desktop: collapse toggle -->
         <button
           @click="toggle"
-          class="w-8 h-8 rounded-lg flex items-center justify-center bg-gray-100 text-gray-500 hover:bg-gray-200 transition-colors shrink-0"
+          class="hidden lg:flex w-8 h-8 rounded-lg items-center justify-center bg-gray-100 text-gray-500 hover:bg-gray-200 transition-colors shrink-0"
         >
           <PanelLeftClose v-if="!isCollapsed" class="w-4 h-4" />
-          <PanelLeftOpen v-else class="w-4 h-4" />
+          <PanelLeftOpen  v-else              class="w-4 h-4" />
         </button>
+
         <div class="h-5 w-px bg-gray-200"></div>
         <span class="text-sm font-medium text-gray-600">Produk</span>
       </div>
 
       <!-- Content -->
-      <div class="flex-1 p-8">
+      <div class="flex-1 p-4 sm:p-6 lg:p-8">
 
-        <!-- Page title + actions -->
-        <div class="flex items-center justify-between mb-6">
-          <div>
-            <h2 class="text-2xl font-bold text-gray-800">Produk</h2>
-            <p class="text-sm text-gray-400 mt-1">Kelola master data produk</p>
-          </div>
+        <!-- Page title -->
+        <div class="mb-5 lg:mb-6">
+          <h2 class="text-xl sm:text-2xl font-bold text-gray-800">Produk</h2>
+          <p class="text-sm text-gray-400 mt-1">Kelola master data produk</p>
         </div>
 
-      <!-- Search -->
-      <div class="mb-4">
-        <div class="flex items-center gap-3">
-          <div class="relative flex-1">
-            <Search class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm w-4 h-4"/>
-            <input
-              v-model="searchQuery"
-              type="text"
-              placeholder="Cari nama produk..."
-              class="w-full pl-9 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white"
-            />
+        <!-- Search + Tambah -->
+        <div class="mb-4">
+          <div class="flex items-center gap-3">
+            <div class="relative flex-1">
+              <Search class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <input
+                v-model="searchQuery"
+                type="text"
+                placeholder="Cari nama produk..."
+                class="w-full pl-9 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white"
+              />
+              <button
+                v-if="searchQuery"
+                @click="searchQuery = ''"
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-lg leading-none"
+              >
+                &times;
+              </button>
+            </div>
             <button
-              v-if="searchQuery"
-              @click="searchQuery = ''"
-              class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-lg leading-none"
+              v-if="isAdmin"
+              @click="openModal()"
+              class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white text-sm font-semibold px-3 sm:px-4 py-2.5 rounded-lg shadow-md shadow-indigo-200 transition-all duration-150 whitespace-nowrap"
             >
-              &times;
+              <span class="text-base leading-none">+</span>
+              <span class="hidden sm:inline">Tambah Produk</span>
+              <span class="sm:hidden">Tambah</span>
             </button>
           </div>
-          <button
-            v-if="isAdmin"
-            @click="openModal()"
-            class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white text-sm font-semibold px-4 py-2.5 rounded-lg shadow-md shadow-indigo-200 hover:shadow-lg hover:shadow-indigo-300 transition-all duration-150"
-          >
-            <span class="text-base">+</span> Tambah Produk
-          </button>
-        </div>
-      </div>
-
-
-      <!-- Table -->
-      <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
-        <div v-if="loading" class="px-6 py-10 text-center text-gray-400 text-sm">Memuat data...</div>
-
-        <div v-else-if="produkList.length === 0" class="px-6 py-10 text-center text-gray-400 text-sm">
-          Belum ada produk
         </div>
 
-        <div v-else-if="filteredProduk.length === 0" class="px-6 py-10 text-center text-gray-400 text-sm">
-          Tidak ada produk yang cocok dengan "<span class="font-medium text-gray-600">{{ searchQuery }}</span>"
-        </div>
+        <!-- Tabel / Card -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
+          <div v-if="loading" class="px-6 py-10 text-center text-gray-400 text-sm">Memuat data...</div>
 
-        <div v-else class="overflow-x-auto">
-          <!-- info hasil search -->
-          <div v-if="searchQuery" class="px-6 pt-4 pb-2 text-xs text-gray-400">
-            Menampilkan {{ filteredProduk.length }} dari {{ produkList.length }} produk
+          <div v-else-if="produkList.length === 0" class="px-6 py-10 text-center text-gray-400 text-sm">
+            Belum ada produk
           </div>
-          <table class="w-full text-sm">
-            <thead>
-              <tr class="bg-gray-50 text-gray-500 text-xs uppercase tracking-wide">
-                <th class="px-6 py-3 text-left">No</th>
-                <th class="px-6 py-3 text-left">Nama Produk</th>
-                <th class="px-6 py-3 text-left">Harga</th>
-                <th class="px-6 py-3 text-left">Stok</th>
-                <th v-if="isAdmin" class="px-6 py-3 text-left">Aksi</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-50">
-              <tr v-for="(p, i) in paginatedList" :key="p.id" class="hover:bg-gray-50 transition-colors">
-                <td class="px-6 py-4 text-gray-400">{{ startIndex + i }}</td>
-                <td class="px-6 py-4 font-medium text-gray-800">{{ p.nama_produk }}</td>
-                <td class="px-6 py-4 text-gray-600">{{ formatRupiah(p.harga) }}</td>
-                <td class="px-6 py-4">
+
+          <div v-else-if="filteredProduk.length === 0" class="px-6 py-10 text-center text-gray-400 text-sm">
+            Tidak ada produk yang cocok dengan "<span class="font-medium text-gray-600">{{ searchQuery }}</span>"
+          </div>
+
+          <div v-else>
+            <div v-if="searchQuery" class="px-4 sm:px-6 pt-4 pb-2 text-xs text-gray-400">
+              Menampilkan {{ filteredProduk.length }} dari {{ produkList.length }} produk
+            </div>
+
+            <!-- ── Mobile: card list ───────────────────── -->
+            <div class="lg:hidden divide-y divide-gray-100">
+              <div
+                v-for="(p, i) in paginatedList"
+                :key="p.id"
+                class="px-4 py-4 hover:bg-gray-50 transition-colors"
+              >
+                <div class="flex items-start justify-between gap-3 mb-2">
+                  <div class="flex-1 min-w-0">
+                    <p class="font-semibold text-gray-800 text-sm truncate">{{ p.nama_produk }}</p>
+                    <p class="text-sm text-gray-600 mt-0.5">{{ formatRupiah(p.harga) }}</p>
+                    <p class="text-xs text-gray-400 mt-0.5">Ditambahkan {{ formatDate(p.created_at) }}</p>
+                  </div>
                   <span
-                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold"
+                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold shrink-0"
                     :class="stokBadge(p.stok)"
                   >
-                    {{ p.stok }}
+                    Stok {{ p.stok }}
                   </span>
-                </td>
-                <td v-if="isAdmin" class="px-6 py-4">
-                  <div class="flex items-center gap-2">
-                    <button
-                      @click="openModal(p)"
-                      class="text-xs font-medium text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-lg transition-colors"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      @click="confirmDelete(p)"
-                      class="text-xs font-medium text-red-600 hover:text-red-800 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg transition-colors"
-                    >
-                      Hapus
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-
-          <!-- Pagination -->
-          <div v-if="totalPages > 1 || filteredProduk.length > 0" class="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-              <p class="text-xs text-gray-400">
-                Menampilkan {{ startIndex }}–{{ endIndex }} dari {{ filteredProduk.length }} produk
-              </p>
-              <!-- Per page selector -->
-              <select
-                v-model.number="perPage"
-                class="text-xs border border-gray-200 rounded-lg px-2 py-1.5 text-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              >
-                <option :value="5">5 / halaman</option>
-                <option :value="10">10 / halaman</option>
-                <option :value="15">15 / halaman</option>
-                <option :value="20">20 / halaman</option>
-              </select>
+                </div>
+                <div v-if="isAdmin" class="flex items-center gap-2 mt-2">
+                  <button
+                    @click="openModal(p)"
+                    class="text-xs font-medium text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-lg transition-colors"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    @click="confirmDelete(p)"
+                    class="text-xs font-medium text-red-600 hover:text-red-800 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg transition-colors"
+                  >
+                    Hapus
+                  </button>
+                </div>
+              </div>
             </div>
-            <div class="flex items-center gap-1">
-              <button
-                @click="prev"
-                :disabled="currentPage === 1"
-                class="px-3 py-1.5 text-xs rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-              >
-                ← Prev
-              </button>
-              <template v-for="page in pageNumbers" :key="page">
-                <span v-if="page === '...'" class="px-2 text-gray-400 text-xs">…</span>
-                <button
-                  v-else
-                  @click="goTo(page)"
-                  class="w-8 h-8 text-xs rounded-lg border transition-colors"
-                  :class="currentPage === page
-                    ? 'bg-indigo-600 text-white border-indigo-600'
-                    : 'border-gray-200 text-gray-600 hover:bg-gray-50'"
+
+            <!-- ── Desktop: tabel ─────────────────────── -->
+            <div class="hidden lg:block overflow-x-auto">
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="bg-gray-50 text-gray-500 text-xs uppercase tracking-wide">
+                    <th class="px-6 py-3 text-left">No</th>
+                    <th class="px-6 py-3 text-left">Nama Produk</th>
+                    <th class="px-6 py-3 text-left">Harga</th>
+                    <th class="px-6 py-3 text-left">Stok</th>
+                    <th class="px-6 py-3 text-left">Ditambahkan</th>
+                    <th v-if="isAdmin" class="px-6 py-3 text-left">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-50">
+                  <tr v-for="(p, i) in paginatedList" :key="p.id" class="hover:bg-gray-50 transition-colors">
+                    <td class="px-6 py-4 text-gray-400">{{ startIndex + i }}</td>
+                    <td class="px-6 py-4 font-medium text-gray-800">{{ p.nama_produk }}</td>
+                    <td class="px-6 py-4 text-gray-600">{{ formatRupiah(p.harga) }}</td>
+                    <td class="px-6 py-4">
+                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold" :class="stokBadge(p.stok)">
+                        {{ p.stok }}
+                      </span>
+                    </td>
+                    <td class="px-6 py-4 text-gray-600">{{ formatDate(p.created_at) }}</td>
+                    <td v-if="isAdmin" class="px-6 py-4">
+                      <div class="flex items-center gap-2">
+                        <button @click="openModal(p)" class="text-xs font-medium text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-lg transition-colors">Edit</button>
+                        <button @click="confirmDelete(p)" class="text-xs font-medium text-red-600 hover:text-red-800 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg transition-colors">Hapus</button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="px-4 sm:px-6 py-4 border-t border-gray-100 flex items-center justify-between gap-3">
+              <div class="flex items-center gap-2 sm:gap-3">
+                <p class="text-xs text-gray-400 hidden sm:block">
+                  {{ startIndex }}–{{ endIndex }} dari {{ filteredProduk.length }} produk
+                </p>
+                <select
+                  v-model.number="perPage"
+                  class="text-xs border border-gray-200 rounded-lg px-2 py-1.5 text-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 >
-                  {{ page }}
-                </button>
-              </template>
-              <button
-                @click="next"
-                :disabled="currentPage === totalPages"
-                class="px-3 py-1.5 text-xs rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-              >
-                Next →
-              </button>
+                  <option :value="5">5</option>
+                  <option :value="10">10</option>
+                  <option :value="15">15</option>
+                  <option :value="20">20</option>
+                </select>
+              </div>
+              <div class="flex items-center gap-1">
+                <button @click="prev" :disabled="currentPage === 1" class="px-3 py-1.5 text-xs rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">← Prev</button>
+                <template v-for="page in pageNumbers" :key="page">
+                  <span v-if="page === '...'" class="hidden sm:inline px-2 text-gray-400 text-xs">…</span>
+                  <button
+                    v-else
+                    @click="goTo(page)"
+                    class="hidden sm:flex w-8 h-8 text-xs rounded-lg border transition-colors items-center justify-center"
+                    :class="currentPage === page ? 'bg-indigo-600 text-white border-indigo-600' : 'border-gray-200 text-gray-600 hover:bg-gray-50'"
+                  >{{ page }}</button>
+                </template>
+                <span class="sm:hidden text-xs text-gray-500 px-2">{{ currentPage }}/{{ totalPages }}</span>
+                <button @click="next" :disabled="currentPage === totalPages" class="px-3 py-1.5 text-xs rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">Next →</button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
       </div>
     </main>
 
     <!-- Modal Tambah/Edit -->
     <Teleport to="body">
       <div v-if="showModal" class="fixed inset-0 z-50 flex items-center justify-center px-4">
-        <!-- Overlay -->
         <div class="absolute inset-0 bg-black/40" @click="closeModal"></div>
-
-        <!-- Card -->
         <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 z-10">
           <div class="flex items-center justify-between mb-6">
-            <h3 class="text-lg font-bold text-gray-800">
-              {{ editMode ? 'Edit Produk' : 'Tambah Produk' }}
-            </h3>
+            <h3 class="text-lg font-bold text-gray-800">{{ editMode ? 'Edit Produk' : 'Tambah Produk' }}</h3>
             <button @click="closeModal" class="text-gray-400 hover:text-gray-600 text-xl leading-none">&times;</button>
           </div>
-
           <form @submit.prevent="submitForm" class="space-y-4">
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1.5">Nama Produk</label>
-              <input
-                v-model="form.nama_produk"
-                type="text"
-                placeholder="Nama produk"
-                class="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                required
-              />
+              <input v-model="form.nama_produk" type="text" placeholder="Nama produk" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" required />
             </div>
-
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1.5">Harga (Rp)</label>
-              <input
-                v-model.number="form.harga"
-                type="number"
-                min="0"
-                placeholder="0"
-                class="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                required
-              />
+              <input v-model.number="form.harga" type="number" min="0" placeholder="0" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" required />
             </div>
-
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1.5">Stok</label>
-              <input
-                v-model.number="form.stok"
-                type="number"
-                min="0"
-                placeholder="0"
-                class="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                required
-              />
+              <input v-model.number="form.stok" type="number" min="0" placeholder="0" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" required />
             </div>
-
-            <!-- Error -->
-            <div v-if="formError" class="bg-red-50 border border-red-200 text-red-600 text-sm px-4 py-3 rounded-lg">
-              {{ formError }}
-            </div>
-
+            <div v-if="formError" class="bg-red-50 border border-red-200 text-red-600 text-sm px-4 py-3 rounded-lg">{{ formError }}</div>
             <div class="flex gap-3 pt-2">
-              <button
-                type="button"
-                @click="closeModal"
-                class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-2.5 rounded-lg text-sm transition-colors"
-              >
-                Batal
-              </button>
-              <button
-                type="submit"
-                class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-lg text-sm transition-colors disabled:opacity-60"
-                :disabled="submitting"
-              >
-                {{ submitting ? 'Menyimpan...' : 'Simpan' }}
-              </button>
+              <button type="button" @click="closeModal" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-2.5 rounded-lg text-sm transition-colors">Batal</button>
+              <button type="submit" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-lg text-sm transition-colors disabled:opacity-60" :disabled="submitting">{{ submitting ? 'Menyimpan...' : 'Simpan' }}</button>
             </div>
           </form>
         </div>
@@ -256,23 +235,10 @@
             <span class="text-2xl">🗑️</span>
           </div>
           <h3 class="text-lg font-bold text-gray-800 mb-2">Hapus Produk?</h3>
-          <p class="text-sm text-gray-500 mb-6">
-            Produk <span class="font-semibold text-gray-700">{{ deleteTarget?.nama_produk }}</span> akan dihapus permanen.
-          </p>
+          <p class="text-sm text-gray-500 mb-6">Produk <span class="font-semibold text-gray-700">{{ deleteTarget?.nama_produk }}</span> akan dihapus permanen.</p>
           <div class="flex gap-3">
-            <button
-              @click="showDeleteModal = false"
-              class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-2.5 rounded-lg text-sm transition-colors"
-            >
-              Batal
-            </button>
-            <button
-              @click="deleteProduk"
-              class="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold py-2.5 rounded-lg text-sm transition-colors disabled:opacity-60"
-              :disabled="submitting"
-            >
-              {{ submitting ? 'Menghapus...' : 'Hapus' }}
-            </button>
+            <button @click="showDeleteModal = false" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-2.5 rounded-lg text-sm transition-colors">Batal</button>
+            <button @click="deleteProduk" class="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold py-2.5 rounded-lg text-sm transition-colors disabled:opacity-60" :disabled="submitting">{{ submitting ? 'Menghapus...' : 'Hapus' }}</button>
           </div>
         </div>
       </div>
@@ -287,20 +253,20 @@ import api from '../services/api'
 import { useToast } from '../composables/useToast'
 import { usePagination } from '../composables/usePagination'
 import { useSidebar } from '../composables/useSidebar'
-import { Search, ChevronLeft, ChevronRight, PanelLeftOpen, PanelLeftClose } from '@lucide/vue'
+import { Search, PanelLeftOpen, PanelLeftClose, Menu } from '@lucide/vue'
 
 const { showToast } = useToast()
-const { isCollapsed, toggle } = useSidebar()
-const loading   = ref(true)
-const produkList = ref([])
-const searchQuery = ref('')
+const { isCollapsed, toggle, openMobile } = useSidebar()
+
+const loading      = ref(true)
+const produkList   = ref([])
+const searchQuery  = ref('')
 const showModal       = ref(false)
 const showDeleteModal = ref(false)
 const editMode   = ref(false)
 const submitting = ref(false)
 const formError  = ref('')
 const deleteTarget = ref(null)
-
 const form = ref({ id: null, nama_produk: '', harga: 0, stok: 0 })
 
 const isAdmin = computed(() => {
@@ -311,15 +277,10 @@ const isAdmin = computed(() => {
 const filteredProduk = computed(() => {
   if (!searchQuery.value.trim()) return produkList.value
   const q = searchQuery.value.toLowerCase().trim()
-  return produkList.value.filter(p =>
-    p.nama_produk.toLowerCase().includes(q)
-  )
+  return produkList.value.filter(p => p.nama_produk.toLowerCase().includes(q))
 })
 
-const {
-  currentPage, perPage, totalPages, paginatedList,
-  startIndex, endIndex, pageNumbers, goTo, prev, next,
-} = usePagination(filteredProduk, 5)
+const { currentPage, perPage, totalPages, paginatedList, startIndex, endIndex, pageNumbers, goTo, prev, next } = usePagination(filteredProduk, 10)
 
 async function fetchProduk() {
   loading.value = true
@@ -345,27 +306,17 @@ function openModal(produk = null) {
   showModal.value = true
 }
 
-function closeModal() {
-  showModal.value = false
-}
+function closeModal() { showModal.value = false }
 
 async function submitForm() {
   formError.value = ''
   submitting.value = true
   try {
     if (editMode.value) {
-      await api.put(`/products/${form.value.id}`, {
-        nama_produk: form.value.nama_produk,
-        harga: form.value.harga,
-        stok: form.value.stok,
-      })
+      await api.put(`/products/${form.value.id}`, { nama_produk: form.value.nama_produk, harga: form.value.harga, stok: form.value.stok })
       showToast('Produk berhasil diupdate', 'success')
     } else {
-      await api.post('/products', {
-        nama_produk: form.value.nama_produk,
-        harga: form.value.harga,
-        stok: form.value.stok,
-      })
+      await api.post('/products', { nama_produk: form.value.nama_produk, harga: form.value.harga, stok: form.value.stok })
       showToast('Produk berhasil ditambahkan', 'success')
     }
     closeModal()
@@ -399,6 +350,10 @@ async function deleteProduk() {
 
 function formatRupiah(value) {
   return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(value)
+}
+
+function formatDate(dateStr) {
+  return new Date(dateStr).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })
 }
 
 function stokBadge(stok) {

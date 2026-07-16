@@ -1,7 +1,8 @@
 import { ref } from 'vue'
 
 // Singleton state — shared across all components
-const isCollapsed = ref(localStorage.getItem('sidebar-collapsed') === 'true')
+const isCollapsed  = ref(localStorage.getItem('sidebar-collapsed') === 'true')
+const isMobileOpen = ref(false)
 
 export function useSidebar() {
   function toggle() {
@@ -9,5 +10,8 @@ export function useSidebar() {
     localStorage.setItem('sidebar-collapsed', isCollapsed.value)
   }
 
-  return { isCollapsed, toggle }
+  function openMobile()  { isMobileOpen.value = true  }
+  function closeMobile() { isMobileOpen.value = false }
+
+  return { isCollapsed, isMobileOpen, toggle, openMobile, closeMobile }
 }
