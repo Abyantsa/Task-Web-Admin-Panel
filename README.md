@@ -333,7 +333,7 @@ npm run build
 
 - **Autentikasi** — Login dengan JWT, token disimpan di localStorage, auto-redirect jika belum login
 - **Role-based access** — Admin bisa CRUD produk, kasir hanya bisa lihat & buat transaksi
-- **Dashboard** — Statistik total produk, transaksi, dan pendapatan + 7 transaksi terbaru
+- **Dashboard** — Statistik total produk, transaksi, dan pendapatan + 6 transaksi terbaru
 - **Manajemen Produk** — Tabel dengan search realtime, pagination dinamis, badge stok warna-warni
 - **Transaksi** — Form buat transaksi dengan preview total, validasi stok, riwayat dengan pagination
 - **Toast Notification** — Notifikasi pojok kanan atas untuk setiap aksi (success, error, warning, info)
