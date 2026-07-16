@@ -1,42 +1,78 @@
 <template>
-  <aside class="fixed top-0 left-0 h-full w-60 bg-indigo-700 text-white flex flex-col z-20">
-    <!-- Profile di atas -->
-    <div class="px-4 py-5 border-b border-indigo-600">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-full bg-indigo-500 flex items-center justify-center text-sm font-bold uppercase shrink-0">
+  <aside
+    class="fixed top-0 left-0 h-full bg-white border-r border-indigo-100 flex flex-col z-20 transition-all duration-300 ease-in-out items-center py-4 gap-2"
+    :class="isCollapsed ? 'w-16' : 'w-60'"
+  >
+    <!-- Profile avatar -->
+    <div class="w-full px-2 mb-1 shrink-0">
+      <div class="flex items-center gap-3 px-2 py-2 rounded-2xl" :class="isCollapsed ? 'justify-center' : ''">
+        <div class="w-10 h-10 rounded-2xl bg-indigo-600 flex items-center justify-center text-sm font-bold uppercase text-white shrink-0">
           {{ user?.username?.charAt(0) ?? '?' }}
         </div>
-        <div class="flex-1 min-w-0">
-          <p class="text-sm font-semibold truncate">{{ user?.username }}</p>
-          <p class="text-xs text-indigo-300 capitalize">{{ user?.role }}</p>
+        <div v-if="!isCollapsed" class="flex-1 min-w-0">
+          <p class="text-sm font-semibold text-gray-800 truncate">{{ user?.username }}</p>
+          <p class="text-xs text-indigo-400 capitalize">{{ user?.role }}</p>
         </div>
       </div>
     </div>
 
+    <!-- Divider -->
+    <div class="w-8 h-px bg-indigo-100 mb-1 shrink-0"></div>
+
     <!-- Menu -->
-    <nav class="flex-1 px-3 py-4 space-y-1">
-      <RouterLink
-        v-for="item in menuItems"
-        :key="item.path"
-        :to="item.path"
-        class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors"
-        :class="isActive(item.path)
-          ? 'bg-indigo-800 text-white'
-          : 'text-indigo-100 hover:bg-indigo-600 hover:text-white'"
-      >
-        <component :is="item.icon" class="w-5 h-5 shrink-0" />
-        {{ item.label }}
-      </RouterLink>
+    <nav class="flex-1 flex flex-col gap-1 w-full px-2">
+      <div v-for="item in menuItems" :key="item.path" class="relative group">
+        <RouterLink
+          :to="item.path"
+          class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors duration-150 text-sm font-semibold"
+          :class="[
+            isCollapsed ? 'justify-center' : '',
+            isActive(item.path)
+              ? 'bg-indigo-800 text-white'
+              : 'text-gray-500 hover:bg-indigo-50 hover:text-indigo-700'
+          ]"
+        >
+          <component :is="item.icon" class="w-5 h-5 shrink-0" />
+          <span v-if="!isCollapsed" class="whitespace-nowrap tracking-wide">
+            {{ item.label.toUpperCase() }}
+          </span>
+        </RouterLink>
+
+        <!-- Tooltip bubble saat collapsed -->
+        <div
+          v-if="isCollapsed"
+          class="absolute left-full top-0 bottom-0 ml-3 my-auto h-fit flex items-center px-4 py-2.5 bg-indigo-800 text-white text-sm font-semibold rounded-xl whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-150 z-50 shadow-xl shadow-indigo-200"
+        >
+          <span class="absolute right-full top-1/2 -translate-y-1/2 border-[7px] border-transparent border-r-indigo-800"></span>
+          {{ item.label.toUpperCase() }}
+        </div>
+      </div>
     </nav>
 
+    <!-- Divider -->
+    <div class="w-8 h-px bg-indigo-100 shrink-0"></div>
+
     <!-- Logout -->
-    <div class="px-4 py-4 border-t border-indigo-600">
-      <button
-        @click="logout"
-        class="w-full text-left flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-pink-500 hover:text-white transition-colors"
-      >
-        <LogOut class="w-5 h-5" /> Logout
-      </button>
+    <div class="w-full px-2 shrink-0">
+      <div class="relative group">
+        <button
+          @click="logout"
+          class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-gray-500 hover:bg-red-50 hover:text-red-600 transition-colors"
+          :class="isCollapsed ? 'justify-center' : ''"
+        >
+          <LogOut class="w-5 h-5 shrink-0" />
+          <span v-if="!isCollapsed" class="whitespace-nowrap tracking-wide">LOGOUT</span>
+        </button>
+
+        <!-- Tooltip logout saat collapsed -->
+        <div
+          v-if="isCollapsed"
+          class="absolute left-full top-0 bottom-0 ml-3 my-auto h-fit flex items-center px-4 py-2.5 bg-red-600 text-white text-sm font-semibold rounded-xl whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-150 z-50 shadow-xl"
+        >
+          <span class="absolute right-full top-1/2 -translate-y-1/2 border-[7px] border-transparent border-r-red-600"></span>
+          LOGOUT
+        </div>
+      </div>
     </div>
   </aside>
 </template>
@@ -45,9 +81,11 @@
 import { computed } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { LayoutDashboard, Package, ShoppingCart, LogOut } from '@lucide/vue'
+import { useSidebar } from '../composables/useSidebar'
 
 const route  = useRoute()
 const router = useRouter()
+const { isCollapsed } = useSidebar()
 
 const user = computed(() => {
   const raw = localStorage.getItem('user')

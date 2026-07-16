@@ -2,14 +2,31 @@
   <div class="flex min-h-screen bg-gray-50">
     <Sidebar />
 
-    <main class="ml-60 flex-1 p-8">
-      <!-- Header -->
-      <div class="flex items-center justify-between mb-6">
-        <div>
-          <h2 class="text-2xl font-bold text-gray-800">Produk</h2>
-          <p class="text-sm text-gray-500 mt-1">Kelola master data produk</p>
-        </div>
+    <main class="flex-1 transition-all duration-300 flex flex-col" :class="isCollapsed ? 'ml-16' : 'ml-60'">
+
+      <!-- Topbar -->
+      <div class="flex items-center gap-4 px-6 py-3 bg-white border-b border-gray-100 sticky top-0 z-10">
+        <button
+          @click="toggle"
+          class="w-8 h-8 rounded-lg flex items-center justify-center bg-gray-100 text-gray-500 hover:bg-gray-200 transition-colors shrink-0"
+        >
+          <PanelLeftClose v-if="!isCollapsed" class="w-4 h-4" />
+          <PanelLeftOpen v-else class="w-4 h-4" />
+        </button>
+        <div class="h-5 w-px bg-gray-200"></div>
+        <span class="text-sm font-medium text-gray-600">Produk</span>
       </div>
+
+      <!-- Content -->
+      <div class="flex-1 p-8">
+
+        <!-- Page title + actions -->
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h2 class="text-2xl font-bold text-gray-800">Produk</h2>
+            <p class="text-sm text-gray-400 mt-1">Kelola master data produk</p>
+          </div>
+        </div>
 
       <!-- Search -->
       <div class="mb-4">
@@ -37,7 +54,6 @@
           >
             <span class="text-base">+</span> Tambah Produk
           </button>
-
         </div>
       </div>
 
@@ -150,6 +166,7 @@
             </div>
           </div>
         </div>
+      </div>
       </div>
     </main>
 
@@ -269,9 +286,11 @@ import Sidebar from '../components/Sidebar.vue'
 import api from '../services/api'
 import { useToast } from '../composables/useToast'
 import { usePagination } from '../composables/usePagination'
-import { Search } from '@lucide/vue'
+import { useSidebar } from '../composables/useSidebar'
+import { Search, ChevronLeft, ChevronRight, PanelLeftOpen, PanelLeftClose } from '@lucide/vue'
 
 const { showToast } = useToast()
+const { isCollapsed, toggle } = useSidebar()
 const loading   = ref(true)
 const produkList = ref([])
 const searchQuery = ref('')
